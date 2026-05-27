@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="page-title">Graha Hotel</title>
+  <link rel="icon" id="favicon" href="" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #0c1428;
+      --navy-light: #1a2444;
+      --gold: #c9a84c;
+      --gold-light: #d4b85a;
+      --cream: #faf6ef;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--navy); }
+    .font-display { font-family: 'Cormorant Garamond', serif; }
+
+    .text-gold-gradient {
+      color: var(--gold);
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--navy); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+    .nav-glass {
+      background: rgba(12, 20, 40, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(201, 168, 76, 0.15);
+    }
+
+    .hero-overlay {
+      background: linear-gradient(
+        to bottom,
+        rgba(12, 20, 40, 0.6) 0%,
+        rgba(12, 20, 40, 0.3) 40%,
+        rgba(12, 20, 40, 0.8) 100%
+      );
+    }
+
+    .room-card { transition: transform 0.4s ease; }
+    .room-card:hover { transform: translateY(-6px); }
+    .room-card .card-img { transition: transform 0.6s ease; }
+    .room-card:hover .card-img { transform: scale(1.05); }
+
+    .gold-line::before {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 2px;
+      background: var(--gold);
+      margin: 0 auto 1.25rem;
+    }
+    .gold-line-left::before {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 2px;
+      background: var(--gold);
+      margin: 0 0 1.25rem;
+    }
+
+    .quote-mark {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 5rem;
+      line-height: 0.6;
+      color: var(--gold);
+      opacity: 0.2;
+    }
+
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #mobile-menu { transition: max-height 0.35s ease, opacity 0.35s ease; max-height: 0; opacity: 0; overflow: hidden; }
+    #mobile-menu.open { max-height: 500px; opacity: 1; }
+
+    .stars { color: var(--gold); letter-spacing: 2px; }
+
+    .contact-input:focus {
+      outline: none;
+      border-color: var(--gold) !important;
+      box-shadow: inset 3px 0 0 var(--gold);
+    }
+
+    @keyframes bounce-slow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(6px); }
+    }
+    .bounce-slow { animation: bounce-slow 2s ease-in-out infinite; }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(255,255,255,0.5);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════════════════════════════ -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+
+      <a href="#" class="flex items-center gap-3 group">
+        <img id="nav-logo-img" src="" alt="logo" class="h-10 hidden" />
+        <span id="nav-logo-text" class="font-display text-2xl font-semibold text-gold-gradient tracking-wide"></span>
+      </a>
+
+      <div id="nav-links" class="hidden lg:flex items-center gap-8"></div>
+
+      <div class="flex items-center gap-4">
+        <a id="nav-cta" href="#contact"
+           class="hidden lg:inline-flex items-center px-6 py-2.5 text-sm font-medium tracking-widest uppercase border border-[var(--gold)] text-[var(--gold)] hover:bg-[var(--gold)] hover:text-[var(--navy)] transition-all duration-300 rounded-sm">
+        </a>
+        <button id="hamburger" class="lg:hidden text-white p-2" aria-label="Toggle menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path id="ham-open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            <path id="ham-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="lg:hidden nav-glass">
+    <div id="mobile-links" class="px-6 py-4 flex flex-col gap-4"></div>
+  </div>
+</nav>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════════════ -->
+<section id="hero" class="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
+  <div id="hero-bg" class="absolute inset-0 bg-cover bg-center"></div>
+  <div class="hero-overlay absolute inset-0"></div>
+
+  <div class="relative z-10 text-center text-white px-6 max-w-5xl mx-auto">
+    <h1 id="hero-headline" class="font-display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-light leading-[1.05] mb-6 fade-up" style="transition-delay:0.1s"></h1>
+    <p id="hero-sub" class="text-white/75 text-lg lg:text-xl font-light max-w-2xl mx-auto mb-10 fade-up" style="transition-delay:0.2s"></p>
+    <div id="hero-ctas" class="flex flex-col sm:flex-row gap-4 justify-center fade-up" style="transition-delay:0.3s"></div>
+  </div>
+
+  <div class="scroll-indicator bounce-slow">
+    <span class="text-xs tracking-widest uppercase">Scroll</span>
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATS BAR
+═══════════════════════════════════════════════════════════════ -->
+<section class="bg-[var(--navy)] py-10">
+  <div id="stats-bar" class="max-w-7xl mx-auto px-6 grid grid-cols-2 lg:grid-cols-4 gap-8 text-center"></div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ROOMS
+═══════════════════════════════════════════════════════════════ -->
+<section id="rooms" class="py-24 lg:py-32 bg-[var(--cream)]">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="text-center mb-16 fade-up">
+      <h2 id="rooms-title" class="font-display text-4xl lg:text-5xl font-light text-[var(--navy)] gold-line"></h2>
+      <p id="rooms-sub" class="text-[var(--navy)]/60 mt-3 text-lg max-w-xl mx-auto"></p>
+    </div>
+    <div id="rooms-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     FACILITIES
+═══════════════════════════════════════════════════════════════ -->
+<section id="facilities" class="py-24 lg:py-32 bg-[var(--navy)]">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="text-center mb-16 fade-up">
+      <h2 id="facilities-title" class="font-display text-4xl lg:text-5xl font-light text-white gold-line"></h2>
+      <p id="facilities-sub" class="text-white/50 mt-3 text-lg max-w-xl mx-auto"></p>
+    </div>
+    <div id="facilities-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch"></div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ABOUT
+═══════════════════════════════════════════════════════════════ -->
+<section id="about" class="py-24 lg:py-32 bg-[var(--cream)]">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div class="fade-up order-2 lg:order-1">
+        <img id="about-img" src="" alt="About" class="w-full h-80 lg:h-[500px] object-cover rounded-sm" loading="lazy" />
+      </div>
+      <div class="fade-up order-1 lg:order-2" style="transition-delay:0.15s">
+        <p class="font-display italic text-[var(--gold)] text-lg tracking-widest mb-4">Tentang Kami</p>
+        <h2 id="about-headline" class="font-display text-4xl lg:text-5xl font-light text-[var(--navy)] leading-tight mb-6 gold-line-left"></h2>
+        <p id="about-body" class="text-[var(--navy)]/65 text-lg leading-relaxed mb-8"></p>
+        <ul id="about-highlights" class="space-y-3"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TESTIMONIALS
+═══════════════════════════════════════════════════════════════ -->
+<section class="py-24 lg:py-32 bg-[var(--navy)]">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="text-center mb-16 fade-up">
+      <h2 id="testi-title" class="font-display text-4xl lg:text-5xl font-light text-white gold-line"></h2>
+    </div>
+    <div id="testimonials-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     CONTACT
+═══════════════════════════════════════════════════════════════ -->
+<section id="contact" class="py-24 lg:py-32"
+  style="background: var(--cream)">
+  <div class="max-w-6xl mx-auto px-6 lg:px-8">
+    <div class="text-center mb-16 fade-up">
+      <h2 id="contact-title" class="font-display text-4xl lg:text-5xl font-light text-[var(--navy)] gold-line"></h2>
+      <p id="contact-sub" class="text-[var(--navy)]/55 mt-3 text-lg max-w-xl mx-auto"></p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-12">
+      <div class="lg:col-span-2 fade-up">
+        <div class="space-y-8">
+          <div>
+            <p class="text-[var(--gold)] text-xs tracking-[0.3em] uppercase mb-2">Email</p>
+            <a id="contact-email" href="#" class="text-[var(--navy)] text-lg hover:text-[var(--gold)] transition-colors"></a>
+          </div>
+          <div>
+            <p class="text-[var(--gold)] text-xs tracking-[0.3em] uppercase mb-2">Telepon</p>
+            <a id="contact-phone" href="#" class="text-[var(--navy)] text-lg hover:text-[var(--gold)] transition-colors"></a>
+          </div>
+          <div>
+            <p class="text-[var(--gold)] text-xs tracking-[0.3em] uppercase mb-2">Alamat</p>
+            <p id="contact-address" class="text-[var(--navy)]/70 text-lg"></p>
+          </div>
+        </div>
+      </div>
+
+      <form id="contact-form" class="lg:col-span-3 space-y-5 fade-up" style="transition-delay:0.15s" onsubmit="handleFormSubmit(event)">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <input id="form-name" type="text" class="contact-input w-full px-5 py-4 rounded-sm text-sm border bg-white text-[var(--navy)]" style="border-color: #d0dce8;" required />
+          <input id="form-email" type="email" class="contact-input w-full px-5 py-4 rounded-sm text-sm border bg-white text-[var(--navy)]" style="border-color: #d0dce8;" required />
+        </div>
+        <input id="form-dest" type="text" class="contact-input w-full px-5 py-4 rounded-sm text-sm border bg-white text-[var(--navy)]" style="border-color: #d0dce8;" />
+        <textarea id="form-msg" rows="5" class="contact-input w-full px-5 py-4 rounded-sm text-sm border bg-white text-[var(--navy)] resize-none" style="border-color: #d0dce8;"></textarea>
+        <button id="form-submit" type="submit"
+          class="w-full py-4 text-sm font-medium tracking-[0.2em] uppercase transition-all duration-300 rounded-sm"
+          style="background: var(--gold); color: white;">
+        </button>
+        <p id="form-success" class="hidden text-center text-[var(--gold)] font-display italic text-lg">
+          ✦ Terima kasih! Pesan Anda telah terkirim.
+        </p>
+      </form>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════════════ -->
+<footer class="bg-[var(--navy)] border-t border-[var(--gold)]/15">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-12 mb-12">
+      <div class="lg:col-span-1">
+        <p id="footer-brand" class="font-display text-2xl text-gold-gradient mb-3"></p>
+        <p id="footer-tagline" class="text-white/45 text-sm leading-relaxed mb-6"></p>
+        <div id="footer-socials" class="flex gap-4"></div>
+      </div>
+      <div id="footer-columns" class="lg:col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-8"></div>
+    </div>
+
+    <div class="border-t border-white/10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <p id="footer-copyright" class="text-white/35 text-sm"></p>
+      <div class="flex items-center gap-2">
+        <div class="w-1.5 h-1.5 rounded-full bg-[var(--gold)]"></div>
+        <span class="text-white/35 text-xs tracking-widest uppercase">Premium Hotel</span>
+        <div class="w-1.5 h-1.5 rounded-full bg-[var(--gold)]"></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="config.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
